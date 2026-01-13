@@ -190,14 +190,6 @@ export default function OnlineFootprint({ initial, onNext, onBack }: Props) {
             Online Footprint
           </h3>
           
-          <label className="label">Medical Licence Number</label>
-          <input 
-            className="input" 
-            value={form.licenceNumber} 
-            onChange={(e) => update("licenceNumber", e.target.value)} 
-            placeholder="Enter your medical licence number"
-          />
-
           <label className="label">Your website link</label>
           <input 
             className="input" 
@@ -260,6 +252,14 @@ export default function OnlineFootprint({ initial, onNext, onBack }: Props) {
             value={form.experience} 
             onChange={(e) => update("experience", e.target.value)} 
             placeholder="Enter years of experience"
+          />
+
+          <label className="label">Medical Licence Number</label>
+          <input 
+            className="input" 
+            value={form.licenceNumber} 
+            onChange={(e) => update("licenceNumber", e.target.value)} 
+            placeholder="Enter your medical licence number"
           />
         </div>
 

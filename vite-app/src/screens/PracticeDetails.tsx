@@ -1002,9 +1002,6 @@ export default function PracticeDetails({ initial, onNext, onBack }: Props) {
           </div>
         )}
 
-        <label className="label">Medical Licence Number</label>
-        <input className="input" value={form.licenseNumber} onChange={(e) => update("licenseNumber", e.target.value)} />
-
         <div className="row">
           <button className="btn btn--ghost" type="button" onClick={onBack}>
             Back
