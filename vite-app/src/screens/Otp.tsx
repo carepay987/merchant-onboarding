@@ -129,10 +129,13 @@ export default function OtpScreen({ phone, onChangeNumber, onVerify }: Props) {
   return (
     <section className="card card--padded">
       <img src="/images/verify-otp.png" alt="" className="sr-only" />
-      <h2 className="title">Verify OTP</h2>
-      <p className="muted">Enter the OTP sent to</p>
-      <div className="row row--spread">
-        <strong>+91 {phone}</strong>
+      <h2 className="title">Verify Your Phone</h2>
+      <p className="muted" style={{ marginBottom: '1rem' }}>
+        We've sent a verification code to your phone number
+      </p>
+      <p className="muted" style={{ marginBottom: '0.5rem' }}>Enter the 4-digit OTP sent to</p>
+      <div className="row row--spread" style={{ marginBottom: '1.5rem', padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: 'var(--border-radius-md)' }}>
+        <strong style={{ color: 'var(--text-primary)', fontSize: '1rem' }}>+91 {phone}</strong>
         <button className="link" type="button" onClick={onChangeNumber}>
           Change Number
         </button>
@@ -140,30 +143,15 @@ export default function OtpScreen({ phone, onChangeNumber, onVerify }: Props) {
 
       {/* Error Message Display */}
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginBottom: '1rem',
-          border: '1px solid #f5c6cb'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{error}</span>
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#721c24',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '0'
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <div className="alert alert--error">
+          <span>{error}</span>
+          <button 
+            className="alert__close"
+            onClick={() => setError(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
       )}
 
@@ -185,7 +173,7 @@ export default function OtpScreen({ phone, onChangeNumber, onVerify }: Props) {
           ))}
         </div>
         <button className="btn btn--primary" type="submit">
-          Submit
+          Verify OTP →
         </button>
       </form>
     </section>

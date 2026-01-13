@@ -256,8 +256,16 @@ export default function BankDetails({ initial, onSubmitAll, onBack }: Props) {
 
   return (
     <section className="card card--padded">
+      <button className="link link--back" type="button" onClick={onBack} aria-label="Back" style={{ marginBottom: '1rem' }}>
+        ← Back
+      </button>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2 className="title">Bank details</h2>
+        <div>
+          <h2 className="title">Banking Information</h2>
+          <p className="muted" style={{ marginTop: '0.5rem' }}>
+            Provide your bank account details for payments
+          </p>
+        </div>
         <div style={{ position: 'relative' }}>
           <input
             type="file"
@@ -269,49 +277,30 @@ export default function BankDetails({ initial, onSubmitAll, onBack }: Props) {
           />
           <label
             htmlFor="cancelled-cheque-upload"
+            className="btn btn--primary"
             style={{
-              display: 'inline-block',
-              padding: '0.5rem 1rem',
-              backgroundColor: ocrLoading ? '#ccc' : '#007bff',
-              color: 'white',
-              borderRadius: '4px',
               cursor: ocrLoading ? 'not-allowed' : 'pointer',
+              opacity: ocrLoading ? 0.7 : 1,
               fontSize: '0.875rem',
-              border: 'none',
-              transition: 'background-color 0.2s'
+              padding: '0.75rem 1.25rem'
             }}
           >
-            {ocrLoading ? 'Processing...' : '📄 Upload Cancelled Cheque'}
+            {ocrLoading ? '⏳ Processing...' : '📄 Upload Cancelled Cheque'}
           </label>
         </div>
       </div>
 
       {/* Error Message Display */}
       {error && (
-        <div style={{
-          backgroundColor: error.includes('successfully') ? '#d4edda' : '#f8d7da',
-          color: error.includes('successfully') ? '#155724' : '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginBottom: '1rem',
-          border: error.includes('successfully') ? '1px solid #c3e6cb' : '1px solid #f5c6cb'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{error}</span>
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: error.includes('successfully') ? '#155724' : '#721c24',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '0'
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <div className={error.includes('successfully') ? 'alert alert--success' : 'alert alert--error'}>
+          <span>{error}</span>
+          <button 
+            className="alert__close"
+            onClick={() => setError(null)}
+            aria-label="Close message"
+          >
+            ×
+          </button>
         </div>
       )}
 
@@ -453,7 +442,7 @@ export default function BankDetails({ initial, onSubmitAll, onBack }: Props) {
             Back
           </button>
           <button className="btn btn--primary" type="submit">
-            Next
+            Continue →
           </button>
         </div>
       </form>

@@ -99,42 +99,35 @@ export default function ContractSigning({ onBack, onComplete }: Props) {
 
   return (
     <section className="card card--padded">
+      <button className="link link--back" type="button" onClick={onBack} aria-label="Back" style={{ marginBottom: '1rem' }}>
+        ← Back
+      </button>
+      <h2 className="title">Contract & Agreement</h2>
+      <p className="muted" style={{ marginBottom: '1.5rem' }}>
+        Please review and sign the contract to complete your onboarding
+      </p>
       {/* Error Message Display */}
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginBottom: '1rem',
-          border: '1px solid #f5c6cb'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{error}</span>
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#721c24',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '0'
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <div className="alert alert--error">
+          <span>{error}</span>
+          <button 
+            className="alert__close"
+            onClick={() => setError(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
       )}
 
       {/* PDF Viewer Container */}
       <div style={{
-        border: '2px solid #e0e0e0',
-        borderRadius: '8px',
-        backgroundColor: '#f8f9fa',
+        border: '2px solid var(--border-color)',
+        borderRadius: 'var(--border-radius-lg)',
+        backgroundColor: 'var(--bg-secondary)',
         marginBottom: '2rem',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        boxShadow: 'var(--shadow-md)'
       }}>
         {/* PDF Content Area */}
         <div style={{
@@ -177,25 +170,8 @@ export default function ContractSigning({ onBack, onComplete }: Props) {
         <button 
           className="btn btn--primary" 
           onClick={handleCompleteSigning}
-          style={{
-            backgroundColor: '#4a5568',
-            color: 'white',
-            border: 'none',
-            padding: '0.75rem 2rem',
-            borderRadius: '6px',
-            fontSize: '1rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s'
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#2d3748'
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#4a5568'
-          }}
         >
-          Complete signing
+          Complete Signing →
         </button>
       </div>
     </section>

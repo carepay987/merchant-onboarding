@@ -158,47 +158,30 @@ export default function AddressScreen({ initial, onNext, onBack }: Props) {
 
   return (
     <section className="card card--padded">
-      <h2 className="title">Address</h2>
+      <button className="link link--back" type="button" onClick={onBack} aria-label="Back">
+        ← Back
+      </button>
+      <h2 className="title">Address Details</h2>
+      <p className="muted" style={{ marginBottom: '1.5rem' }}>
+        Please provide your practice address information
+      </p>
       
       {/* Error Message Display */}
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginBottom: '1rem',
-          border: '1px solid #f5c6cb'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{error}</span>
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#721c24',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '0'
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <div className="alert alert--error">
+          <span>{error}</span>
+          <button 
+            className="alert__close"
+            onClick={() => setError(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
       )}
 
       {gstAutoFilled && (
-        <div className="gst-auto-fill-notice" style={{ 
-          fontSize: '12px', 
-          color: '#28a745', 
-          marginBottom: '16px',
-          padding: '8px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '4px',
-          border: '1px solid #28a745'
-        }}>
+        <div className="alert alert--success" style={{ marginBottom: '1rem' }}>
           ✅ Address details auto-filled from GST information
         </div>
       )}
@@ -228,7 +211,7 @@ export default function AddressScreen({ initial, onNext, onBack }: Props) {
             Back
           </button>
           <button className="btn btn--primary" type="submit">
-            Next
+            Continue →
           </button>
         </div>
       </form>

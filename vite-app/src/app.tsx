@@ -7,6 +7,7 @@ import OtpScreen from "./screens/Otp"
 import PersonalDetails from "./screens/PersonalDetails"
 import PracticeDetails from "./screens/PracticeDetails"
 import AddressScreen from "./screens/Address"
+import OnlineFootprint from "./screens/OnlineFootprint"
 import BankDetails from "./screens/BankDetails"
 import ContractSigning from "./screens/ContractSigning"
 import { sendOtp, verifyOtp, validatePhoneNumber, validateOtp } from "./services/api"
@@ -17,6 +18,7 @@ type AllData = {
   personal?: any
   practice?: any
   address?: any
+  onlineFootprint?: any
   bank?: any
   contract?: any
 }
@@ -26,16 +28,17 @@ export default function App() {
   const [data, setData] = useState<AllData>({})
   const [error, setError] = useState<string | null>(null)
 
-  const total = 7
+  const total = 8
   const header = useMemo(() => {
     const titles = [
-      "Enter phone number",
-      "Verify OTP",
-      "Personal details",
-      "Practice details",
-      "Address",
-      "Bank details",
-      "Contract signing",
+      "Get Started",
+      "Verify Your Phone",
+      "Personal Information",
+      "Practice Information",
+      "Address Details",
+      "Online Footprint & Doctor Details",
+      "Banking Information",
+      "Contract & Agreement",
     ]
     return titles[step]
   }, [step])
@@ -56,34 +59,22 @@ export default function App() {
             
             <section className="card card--padded">
               <img src="/images/hero-image.png" alt="CarePay signup illustration" className="hero-img" />
-              <h2 className="title">Sign up</h2>
+              <h2 className="title">Welcome to CarePay</h2>
+              <p className="muted" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                Complete your onboarding in just a few simple steps
+              </p>
               
               {/* Error Message Display */}
               {error && (
-                <div style={{
-                  backgroundColor: '#f8d7da',
-                  color: '#721c24',
-                  padding: '1rem',
-                  borderRadius: '4px',
-                  marginBottom: '1rem',
-                  border: '1px solid #f5c6cb'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>{error}</span>
-                    <button 
-                      onClick={() => setError(null)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#721c24',
-                        cursor: 'pointer',
-                        fontSize: '1.2rem',
-                        padding: '0'
-                      }}
-                    >
-                      ×
-                    </button>
-                  </div>
+                <div className="alert alert--error">
+                  <span>{error}</span>
+                  <button 
+                    className="alert__close"
+                    onClick={() => setError(null)}
+                    aria-label="Close error message"
+                  >
+                    ×
+                  </button>
                 </div>
               )}
               
@@ -126,7 +117,7 @@ export default function App() {
                   }
                 }}
               >
-                Send OTP
+                Send OTP →
               </button>
               </form>
             </section>
@@ -187,6 +178,16 @@ export default function App() {
             )}
 
             {step === 5 && (
+              <OnlineFootprint
+                onBack={back}
+                onNext={(onlineFootprint) => {
+                  setData((d) => ({ ...d, onlineFootprint }))
+                  next()
+                }}
+              />
+            )}
+
+            {step === 6 && (
               <BankDetails
                 onBack={back}
                 onSubmitAll={(bank) => {
@@ -196,13 +197,14 @@ export default function App() {
               />
             )}
 
-            {step === 6 && (
+            {step === 7 && (
               <ContractSigning
                 onBack={back}
                 onComplete={() => {
                   const payload = { ...data, contract: { signed: true } }
                   console.log("[v0] Collected form data:", payload)
-                  setError("Contract signing completed! Check console for collected data.")
+                  // Show success message
+                  alert("🎉 Congratulations! Your onboarding is complete. Contract signing completed successfully!")
                 }}
               />
             )}

@@ -754,9 +754,16 @@ export default function PracticeDetails({ initial, onNext, onBack }: Props) {
         incorporationDate: formatDateForAPI(form.establishmentDate), // Convert to DD-MM-YYYY format for API
         businessEntityName: form.businessEntity,
         businessEntityType: form.entityType,
-        cinLlpin: form.cin,
+        cinLlpin: form.cin || null, // Allow null if CIN is not provided
         gstIn: form.gstin,
-        speciality: form.speciality
+        speciality: form.speciality,
+        googleReviewLink: null,
+        justdialReviewLink: null,
+        experience: null,
+        justDialLink: null,
+        practoLink: null,
+        instaHandle: null,
+        qualification: null
       }
 
       // Save professional details
@@ -786,35 +793,24 @@ export default function PracticeDetails({ initial, onNext, onBack }: Props) {
     <section className="card card--padded">
       <img src="/images/practice-details.png" alt="" className="sr-only" />
       <button className="link link--back" type="button" onClick={onBack} aria-label="Back">
-        ←
+        ← Back
       </button>
+      <h2 className="title">Practice Information</h2>
+      <p className="muted" style={{ marginBottom: '1.5rem' }}>
+        Tell us about your medical practice and business details
+      </p>
 
       {/* Error Message Display */}
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginBottom: '1rem',
-          border: '1px solid #f5c6cb'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{error}</span>
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#721c24',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '0'
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <div className="alert alert--error">
+          <span>{error}</span>
+          <button 
+            className="alert__close"
+            onClick={() => setError(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
       )}
 
@@ -832,51 +828,38 @@ export default function PracticeDetails({ initial, onNext, onBack }: Props) {
         </select>
 
         {/* GST Certificate Upload */}
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
           <label className="label">Upload GST Certificate</label>
-          <div style={{ 
-            border: '2px dashed #ccc', 
-            borderRadius: '8px', 
-            padding: '20px', 
-            textAlign: 'center',
-            backgroundColor: '#f9f9f9',
-            cursor: 'pointer',
-            position: 'relative'
-          }}>
+          <div className="file-upload-area">
             <input
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={handleGstCertificateFileChange}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                opacity: 0,
-                cursor: 'pointer'
-              }}
               disabled={gstCertificateUploading || gstCertificateProcessing}
             />
             {gstCertificateUploading || gstCertificateProcessing ? (
               <div>
-                <div style={{ fontSize: '16px', marginBottom: '8px' }}>
-                  {gstCertificateUploading ? '📤 Uploading...' : '🔍 Processing OCR...'}
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
+                  {gstCertificateUploading ? '📤' : '🔍'}
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                  {gstCertificateUploading ? 'Uploading...' : 'Processing OCR...'}
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   {gstCertificateUploading ? 'Uploading your GST certificate' : 'Extracting details from certificate'}
                 </div>
               </div>
             ) : (
               <div>
-                <div style={{ fontSize: '16px', marginBottom: '8px' }}>
-                  📄 Click to upload GST certificate
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📄</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                  Click to upload GST certificate
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   Supports PDF, JPEG, PNG (Max 10MB)
                 </div>
                 {gstCertificateFile && (
-                  <div style={{ fontSize: '12px', color: '#4CAF50', marginTop: '8px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--success-600)', marginTop: '0.5rem', fontWeight: 500 }}>
                     ✓ {gstCertificateFile.name}
                   </div>
                 )}
@@ -884,7 +867,7 @@ export default function PracticeDetails({ initial, onNext, onBack }: Props) {
             )}
           </div>
           {(gstCertificateUploading || gstCertificateProcessing) && (
-            <div style={{ fontSize: '12px', color: '#666', marginTop: '8px', textAlign: 'center' }}>
+            <div className="alert alert--info" style={{ marginTop: '0.75rem', padding: '0.75rem', fontSize: '0.875rem' }}>
               This will automatically fill the GSTIN and business details below
             </div>
           )}
@@ -1027,7 +1010,7 @@ export default function PracticeDetails({ initial, onNext, onBack }: Props) {
             Back
           </button>
           <button className="btn btn--primary" type="submit">
-            Next
+            Continue →
           </button>
         </div>
       </form>
