@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, useCallback, useRef } from "react"
- import { saveOrUpdateDoctorDetails, getDoctorDetailsByPhoneNumber, uploadPdf, getAllScoutCodes, ScoutCode, getDocumentsByDoctorId } from "../services/api"
+ import { saveOrUpdateDoctorDetails, getDoctorDetailsByPhoneNumber, uploadPdf, getDocumentsByDoctorId } from "../services/api"
 import { getPhonePrefillData, processPanCardOCR } from "../services/oculonApi"
 
 // Date formatting utility functions
@@ -150,9 +150,6 @@ export default function PersonalDetails({ initial, onNext }: Props) {
   const [panUploadSuccess, setPanUploadSuccess] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [scoutCodes, setScoutCodes] = useState<ScoutCode[]>([])
-  const [scoutCodesLoading, setScoutCodesLoading] = useState(false)
-  const [selectedScoutCode, setSelectedScoutCode] = useState<string>("")
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null)
 
   // Load existing doctor details on component mount
@@ -172,10 +169,6 @@ export default function PersonalDetails({ initial, onNext }: Props) {
             scoutCode: data.scoutCode || "",
           })
           
-          // Set selected scout code if scout code exists
-          if (data.scoutCode) {
-            setSelectedScoutCode(data.scoutCode)
-          }
           console.log("Doctor details loaded:", data)
           
           // Store doctorId in localStorage if we get it from the response
@@ -208,30 +201,7 @@ export default function PersonalDetails({ initial, onNext }: Props) {
     loadDoctorDetails()
   }, [initial.phone])
 
-  // Load scout codes on component mount
-  useEffect(() => {
-    loadScoutCodes()
-  }, [])
-
   const update = (k: keyof Data, v: string) => setForm((f) => ({ ...f, [k]: v }))
-
-  // Load scout codes
-  const loadScoutCodes = async () => {
-    try {
-      setScoutCodesLoading(true)
-      const response = await getAllScoutCodes()
-      
-      if (response.status === 200 && response.data) {
-        setScoutCodes(response.data)
-        console.log("Scout codes loaded:", response.data)
-      }
-    } catch (error) {
-      console.error("Error loading scout codes:", error)
-      // Don't show error to user as this is optional functionality
-    } finally {
-      setScoutCodesLoading(false)
-    }
-  }
 
   // Handle PAN card upload and OCR
   const handlePanCardUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -317,18 +287,6 @@ export default function PersonalDetails({ initial, onNext }: Props) {
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-    }
-  }
-
-  // Handle scout code selection
-  const handleScoutCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCode = e.target.value
-    setSelectedScoutCode(selectedCode)
-    
-    // Find the selected scout and update the form with the scout code
-    const selectedScout = scoutCodes.find(scout => scout.code === selectedCode)
-    if (selectedScout) {
-      setForm(prevForm => ({ ...prevForm, scoutCode: selectedScout.code }))
     }
   }
 
@@ -450,34 +408,22 @@ export default function PersonalDetails({ initial, onNext }: Props) {
   return (
     <section className="card card--padded">
       <img src="/images/personal-details.png" alt="" className="sr-only" />
-      <h2 className="title">Personal details</h2>
+      <h2 className="title">Personal Information</h2>
+      <p className="muted" style={{ marginBottom: '1.5rem' }}>
+        Please provide your personal details to continue
+      </p>
 
       {/* Error Message Display */}
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginBottom: '1rem',
-          border: '1px solid #f5c6cb'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{error}</span>
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#721c24',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '0'
-              }}
-            >
-              ×
-            </button>
-          </div>
+        <div className="alert alert--error">
+          <span>{error}</span>
+          <button 
+            className="alert__close"
+            onClick={() => setError(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
       )}
       <form onSubmit={submit} className="form">
@@ -499,34 +445,39 @@ export default function PersonalDetails({ initial, onNext }: Props) {
         )}
 
         <label className="label">Upload PAN Card</label>
-        <div style={{ marginBottom: '16px' }}>
+        <div className="file-upload-area" style={{ marginBottom: '1rem' }}>
           <input
             ref={fileInputRef}
             type="file"
             accept=".jpg,.jpeg,.png,.pdf"
             onChange={handlePanCardUpload}
-            style={{ 
-              width: '100%', 
-              padding: '8px', 
-              border: '1px solid #ddd', 
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}
             disabled={panUploadLoading}
           />
+          {panUploadLoading ? (
+            <div>
+              <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📤</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Processing PAN card...</div>
+            </div>
+          ) : (
+            <div>
+              <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📄</div>
+              <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Click to upload PAN card</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Supports JPEG, PNG, PDF (Max 5MB)</div>
+            </div>
+          )}
           {panUploadLoading && (
             <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
               🔄 Processing PAN card...
             </div>
           )}
           {panUploadError && (
-            <div style={{ fontSize: '12px', color: '#e74c3c', marginTop: '4px' }}>
-              ❌ {panUploadError}
+            <div className="alert alert--error" style={{ marginTop: '0.75rem', padding: '0.75rem' }}>
+              <span style={{ fontSize: '0.875rem' }}>❌ {panUploadError}</span>
             </div>
           )}
           {panUploadSuccess && (
-            <div style={{ fontSize: '12px', color: '#27ae60', marginTop: '4px' }}>
-              ✅ {panUploadSuccess}
+            <div className="alert alert--success" style={{ marginTop: '0.75rem', padding: '0.75rem' }}>
+              <span style={{ fontSize: '0.875rem' }}>✅ {panUploadSuccess}</span>
             </div>
           )}
         </div>
@@ -602,28 +553,8 @@ export default function PersonalDetails({ initial, onNext }: Props) {
         <label className="label">Date of birth</label>
         <input type="date" className="input" value={form.dob} onChange={(e) => update("dob", e.target.value)} />
 
-        <label className="label">Scout Name (optional)</label>
-        <select 
-          className="input" 
-          value={selectedScoutCode} 
-          onChange={handleScoutCodeChange}
-          disabled={scoutCodesLoading}
-        >
-          <option value="">Select a scout</option>
-          {scoutCodes.map((scout) => (
-            <option key={scout.code} value={scout.code}>
-              {scout.name}
-            </option>
-          ))}
-        </select>
-        {scoutCodesLoading && (
-          <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-            🔄 Loading scout codes...
-          </div>
-        )}
-
         <button className="btn btn--primary" type="submit">
-          Next
+          Continue →
         </button>
       </form>
     </section>

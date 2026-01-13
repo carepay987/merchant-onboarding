@@ -109,12 +109,17 @@ export interface DoctorProfessionalDetails {
   clinicName: string;
   businessEntityName: string;
   businessEntityType: string;
-  cinLlpin: string;
+  cinLlpin: string | null;
   gstIn: string;
   speciality: string;
   googleReviewLink: string | null;
   justdialReviewLink: string | null;
   incorporationDate: string;
+  experience: string | null;
+  justDialLink: string | null;
+  practoLink: string | null;
+  instaHandle: string | null;
+  qualification: string | null;
   addedOn?: number;
   updatedOn?: number | null;
   googleLinkHits?: number;
@@ -131,9 +136,16 @@ export interface DoctorProfessionalPayload {
   incorporationDate: string; // Format: "DD-MM-YYYY" (e.g., "21-06-2001")
   businessEntityName: string;
   businessEntityType: string;
-  cinLlpin: string;
+  cinLlpin: string | null;
   gstIn: string;
   speciality: string;
+  googleReviewLink?: string | null;
+  justdialReviewLink?: string | null;
+  experience?: string | null;
+  justDialLink?: string | null;
+  practoLink?: string | null;
+  instaHandle?: string | null;
+  qualification?: string | null;
 }
 
 export interface DoctorProfessionalResponse {
